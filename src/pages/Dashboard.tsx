@@ -9,6 +9,7 @@ import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 import { dashboardStats, revenueData, enrollmentData, performanceData, alerts } from "../data/mockData";
+import { useApp } from "../store/AppContext";
 
 const iconMap: Record<string, React.ElementType> = {
   users: Users, "user-plus": UserPlus, "dollar-sign": DollarSign,
@@ -18,6 +19,20 @@ const iconMap: Record<string, React.ElementType> = {
 const COLORS = ["#4f46e5", "#7c3aed", "#2563eb", "#0891b2", "#16a34a", "#ca8a04", "#dc2626"];
 
 export default function DashboardPage() {
+  const { students, invoices } = useApp();
+  const activeStudents = students.length;
+  const overdueInvoices = invoices.filter(i => i.status === "overdue").length;
+  const totalRevenue = invoices.filter(i => i.status === "paid").reduce((sum, i) => sum + i.amount, 0);
+
+  const liveStats = [
+    { label: "Alunos Ativos", value: activeStudents.toLocaleString("pt-BR"), change: "+12%", trend: "up", icon: "users" },
+    { label: "Novas Matrículas", value: "156", change: "+23%", trend: "up", icon: "user-plus" },
+    { label: "Inadimplência", value: `${overdueInvoices} faturas`, change: "-0.8%", trend: "down", icon: "dollar-sign" },
+    { label: "Frequência Média", value: "94.7%", change: "+1.2%", trend: "up", icon: "check-circle" },
+    { label: "Receita Mês", value: `R$ ${(totalRevenue / 1000).toFixed(0)}k`, change: "+5.2%", trend: "up", icon: "trending-up" },
+    { label: "Leads Ativos", value: "342", change: "+18%", trend: "up", icon: "target" },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Welcome */}
@@ -38,7 +53,7 @@ export default function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {dashboardStats.map((stat, i) => {
+        {liveStats.map((stat, i) => {
           const Icon = iconMap[stat.icon] || Users;
           const isPositive = stat.trend === "up";
           return (

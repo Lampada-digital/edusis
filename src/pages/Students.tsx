@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Search, Filter, Plus, Download, MoreVertical, Eye, Edit, FileText, Sparkles, ChevronDown } from "lucide-react";
-import { students } from "../data/mockData";
+import { Search, Filter, Plus, Download, Eye, Edit, FileText, Sparkles, X, CheckCircle } from "lucide-react";
+import { useApp } from "../store/AppContext";
+import { Modal, FormField, Input, Select, Button } from "../components/Modal";
 
 export default function StudentsPage() {
+  const { students, addStudent, updateStudent } = useApp();
   const [search, setSearch] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<number | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [form, setForm] = useState({ name: "", enrollment: "", class: "", course: "", email: "", phone: "", guardian: "", guardianPhone: "" });
 
   const filtered = students.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -14,19 +18,39 @@ export default function StudentsPage() {
 
   const student = selectedStudent ? students.find(s => s.id === selectedStudent) : null;
 
+  const handleCreate = () => {
+    if (!form.name || !form.class || !form.course) return;
+    addStudent({
+      name: form.name,
+      enrollment: form.enrollment || `EDU${Date.now()}`,
+      class: form.class,
+      course: form.course,
+      status: "active",
+      avgGrade: 0,
+      attendance: 100,
+      financial: "ok",
+      avatar: form.name.split(" ").map(n => n[0]).slice(0, 2).join(""),
+      email: form.email,
+      phone: form.phone,
+      guardian: form.guardian,
+      guardianPhone: form.guardianPhone,
+    });
+    setShowCreateModal(false);
+    setForm({ name: "", enrollment: "", class: "", course: "", email: "", phone: "", guardian: "", guardianPhone: "" });
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Alunos</h1>
-          <p className="text-sm text-gray-500">2.847 alunos ativos • 156 novas matrículas este mês</p>
+          <p className="text-sm text-gray-500">{students.length} alunos ativos</p>
         </div>
         <div className="flex items-center gap-2">
           <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50">
             <Download className="w-4 h-4" /> Exportar
           </button>
-          <button className="flex items-center gap-2 px-3 py-2 gradient-primary text-white rounded-lg text-sm font-medium">
+          <button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2 px-3 py-2 gradient-primary text-white rounded-lg text-sm font-medium">
             <Plus className="w-4 h-4" /> Novo Aluno
           </button>
         </div>
@@ -47,19 +71,13 @@ export default function StudentsPage() {
           </div>
           <div className="flex gap-2">
             <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50">
-              <Filter className="w-4 h-4" /> Filtros <ChevronDown className="w-3 h-3" />
-            </button>
-            <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50">
-              Turma <ChevronDown className="w-3 h-3" />
-            </button>
-            <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50">
-              Status <ChevronDown className="w-3 h-3" />
+              <Filter className="w-4 h-4" /> Filtros
             </button>
           </div>
         </div>
       </div>
 
-      {/* Student Detail Drawer */}
+      {/* Student Detail */}
       {student && (
         <div className="bg-white rounded-xl border border-gray-100 p-6 animate-fadeIn">
           <div className="flex items-start justify-between mb-6">
@@ -70,25 +88,19 @@ export default function StudentsPage() {
               <div>
                 <h2 className="text-xl font-bold text-gray-900">{student.name}</h2>
                 <p className="text-sm text-gray-500">{student.enrollment} • {student.class} • {student.course}</p>
+                {student.email && <p className="text-xs text-gray-400 mt-1">{student.email} • {student.phone}</p>}
               </div>
             </div>
-            <button onClick={() => setSelectedStudent(null)} className="text-sm text-gray-400 hover:text-gray-600">✕ Fechar</button>
-          </div>
-          
-          {/* Tabs */}
-          <div className="flex gap-1 mb-6 overflow-x-auto border-b border-gray-100 pb-2">
-            {["Resumo", "Notas", "Frequência", "Financeiro", "Documentos", "Comunicação"].map((tab, i) => (
-              <button key={i} className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap ${i === 0 ? "bg-primary-50 text-primary-700" : "text-gray-500 hover:text-gray-700"}`}>
-                {tab}
-              </button>
-            ))}
+            <button onClick={() => setSelectedStudent(null)} className="text-sm text-gray-400 hover:text-gray-600">
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-4 gap-4 mb-6">
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-xs text-gray-500 mb-1">Média Geral</p>
               <p className="text-2xl font-bold text-gray-900">{student.avgGrade}</p>
-              <p className="text-xs text-green-600 mt-1">Acima da média da turma</p>
+              <p className="text-xs text-green-600 mt-1">Acima da média</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-xs text-gray-500 mb-1">Frequência</p>
@@ -104,11 +116,22 @@ export default function StudentsPage() {
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-xs text-gray-500 mb-1">Análise IA</p>
-              <button className="flex items-center gap-1 text-sm text-purple-600 font-medium hover:underline">
-                <Sparkles className="w-3.5 h-3.5" /> Analisar aluno
-              </button>
+              <p className="text-xs text-gray-500 mb-1">Responsável</p>
+              <p className="text-sm font-medium text-gray-900">{student.guardian || "—"}</p>
+              <p className="text-xs text-gray-500">{student.guardianPhone || "—"}</p>
             </div>
+          </div>
+
+          <div className="flex gap-2">
+            <button className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-purple-700 bg-purple-50 rounded-lg hover:bg-purple-100">
+              <Sparkles className="w-3.5 h-3.5" /> Analisar com IA
+            </button>
+            <button className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-primary-700 bg-primary-50 rounded-lg hover:bg-primary-100">
+              <FileText className="w-3.5 h-3.5" /> Documentos
+            </button>
+            <button className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100">
+              <Edit className="w-3.5 h-3.5" /> Editar
+            </button>
           </div>
         </div>
       )}
@@ -167,9 +190,6 @@ export default function StudentsPage() {
                       <button className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600">
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600">
-                        <FileText className="w-4 h-4" />
-                      </button>
                     </div>
                   </td>
                 </tr>
@@ -177,18 +197,58 @@ export default function StudentsPage() {
             </tbody>
           </table>
         </div>
-        {/* Pagination */}
         <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-          <p className="text-xs text-gray-500">Mostrando 1-10 de 2.847 alunos</p>
-          <div className="flex items-center gap-1">
-            <button className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Anterior</button>
-            <button className="px-3 py-1.5 text-xs rounded-lg bg-primary-50 text-primary-700 font-medium">1</button>
-            <button className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">2</button>
-            <button className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">3</button>
-            <button className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Próximo</button>
-          </div>
+          <p className="text-xs text-gray-500">Mostrando {filtered.length} de {students.length} alunos</p>
         </div>
       </div>
+
+      {/* Create Modal */}
+      <Modal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} title="Novo Aluno" size="lg">
+        <div className="space-y-4">
+          <FormField label="Nome Completo" required>
+            <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Ex: João da Silva" />
+          </FormField>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="Matrícula">
+              <Input value={form.enrollment} onChange={(e) => setForm({ ...form, enrollment: e.target.value })} placeholder="Automático se vazio" />
+            </FormField>
+            <FormField label="Curso" required>
+              <Select value={form.course} onChange={(e) => setForm({ ...form, course: e.target.value })}>
+                <option value="">Selecione</option>
+                <option>Ensino Fundamental</option>
+                <option>Ensino Médio</option>
+                <option>Curso de Inglês</option>
+                <option>Robótica</option>
+              </Select>
+            </FormField>
+          </div>
+          <FormField label="Turma" required>
+            <Input value={form.class} onChange={(e) => setForm({ ...form, class: e.target.value })} placeholder="Ex: 9º Ano A" />
+          </FormField>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="E-mail">
+              <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            </FormField>
+            <FormField label="Telefone">
+              <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="(11) 99999-9999" />
+            </FormField>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="Responsável">
+              <Input value={form.guardian} onChange={(e) => setForm({ ...form, guardian: e.target.value })} />
+            </FormField>
+            <FormField label="Telefone do Responsável">
+              <Input value={form.guardianPhone} onChange={(e) => setForm({ ...form, guardianPhone: e.target.value })} />
+            </FormField>
+          </div>
+          <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
+            <Button variant="secondary" onClick={() => setShowCreateModal(false)}>Cancelar</Button>
+            <Button onClick={handleCreate}>
+              <CheckCircle className="w-4 h-4 inline mr-1" /> Criar Aluno
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
