@@ -17,6 +17,8 @@ const pageNames: Record<string, string> = {
   documents: "Documentos",
   communication: "Comunicação",
   ava: "AVA / Learn",
+  "ava-teacher": "AVA Professor",
+  "ava-student": "AVA Aluno",
   library: "Biblioteca",
   ai: "EDUGEST AI",
   radar: "Radar",

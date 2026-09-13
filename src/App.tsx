@@ -17,6 +17,8 @@ import CRMPage from "./pages/CRM";
 import DocumentsPage from "./pages/Documents";
 import CommunicationPage from "./pages/Communication";
 import AVAPage from "./pages/AVA";
+import AVATeacherPage from "./pages/AVATeacher";
+import AVAStudentPage from "./pages/AVAStudent";
 import LibraryPage from "./pages/Library";
 import AIPage from "./pages/AI";
 import RadarPage from "./pages/Radar";
@@ -55,6 +57,8 @@ export default function App() {
       case "documents": return <DocumentsPage />;
       case "communication": return <CommunicationPage />;
       case "ava": return <AVAPage />;
+      case "ava-teacher": return <AVATeacherPage />;
+      case "ava-student": return <AVAStudentPage />;
       case "library": return <LibraryPage />;
       case "ai": return <AIPage />;
       case "radar": return <RadarPage />;
