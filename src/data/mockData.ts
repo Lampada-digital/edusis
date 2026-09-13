@@ -153,6 +153,8 @@ export const sidebarMenu = [
   { id: "documents", label: "Documentos", icon: "FolderOpen", section: "Gestão" },
   { id: "communication", label: "Comunicação", icon: "MessageSquare", section: "Gestão" },
   { id: "ava", label: "AVA / Learn", icon: "MonitorPlay", section: "Educação" },
+  { id: "ava-teacher", label: "AVA Professor", icon: "BookOpen", section: "Educação" },
+  { id: "ava-student", label: "AVA Aluno", icon: "GraduationCap", section: "Educação" },
   { id: "library", label: "Biblioteca", icon: "Library", section: "Educação" },
   { id: "ai", label: "EDUGEST AI", icon: "Brain", section: "Inteligência" },
   { id: "radar", label: "Radar", icon: "Radar", section: "Inteligência" },
