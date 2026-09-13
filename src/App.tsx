@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AppProvider } from "./store/AppContext";
 import Sidebar from "./components/Sidebar";
 import TopBar from "./components/TopBar";
 import DashboardPage from "./pages/Dashboard";
@@ -65,34 +66,36 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      <Sidebar
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        isOpen={sidebarOpen}
-        setIsOpen={setSidebarOpen}
-      />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar
+    <AppProvider>
+      <div className="flex h-screen bg-gray-50 overflow-hidden">
+        <Sidebar
           currentPage={currentPage}
-          sidebarOpen={sidebarOpen}
-          toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+          setCurrentPage={setCurrentPage}
+          isOpen={sidebarOpen}
+          setIsOpen={setSidebarOpen}
         />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPage}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
-            >
-              {renderPage()}
-            </motion.div>
-          </AnimatePresence>
-        </main>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <TopBar
+            currentPage={currentPage}
+            sidebarOpen={sidebarOpen}
+            toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+          />
+          <main className="flex-1 overflow-y-auto p-4 md:p-6">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentPage}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="h-full"
+              >
+                {renderPage()}
+              </motion.div>
+            </AnimatePresence>
+          </main>
+        </div>
       </div>
-    </div>
+    </AppProvider>
   );
 }
