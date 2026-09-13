@@ -9,10 +9,26 @@ import {
 import { sidebarMenu } from "../data/mockData";
 
 const iconMap: Record<string, React.ElementType> = {
-  LayoutDashboard, Users, GraduationCap, BookOpen, Award,
-  ClipboardList, CalendarCheck, Calendar, FileText, DollarSign,
-  Target, FolderOpen, MessageSquare, MonitorPlay, Library,
-  Brain, Radar, Shield, BarChart3, Settings,
+  LayoutDashboard,
+  Users,
+  GraduationCap,
+  BookOpen,
+  Award,
+  ClipboardList,
+  CalendarCheck,
+  Calendar,
+  FileText,
+  DollarSign,
+  Target,
+  FolderOpen,
+  MessageSquare,
+  MonitorPlay,
+  Library,
+  Brain,
+  Radar,
+  Shield,
+  BarChart3,
+  Settings,
 };
 
 interface SidebarProps {

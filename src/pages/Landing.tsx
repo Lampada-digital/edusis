@@ -16,54 +16,48 @@ export default function LandingPage({ onLogin }: LandingProps) {
   if (showLogin) {
     return (
       <div className="min-h-screen gradient-hero flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md"
-        >
-          <div className="bg-white rounded-2xl shadow-2xl p-8">
-            <div className="text-center mb-8">
-              <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">Entrar na EDUGEST</h1>
-              <p className="text-sm text-gray-500 mt-1">Gestão inteligente para uma educação melhor</p>
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
+          <div className="text-center mb-8">
+            <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-6 h-6 text-white" />
             </div>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">E-mail</label>
-                <input
-                  type="email"
-                  defaultValue="admin@edugest.com"
-                  className="w-full mt-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700">Senha</label>
-                <input
-                  type="password"
-                  defaultValue="edugest2026"
-                  className="w-full mt-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
-                />
-              </div>
-              <button
-                onClick={onLogin}
-                className="w-full py-2.5 gradient-primary text-white rounded-lg font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-              >
-                Entrar <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-            <p className="text-center text-xs text-gray-400 mt-6">
-              Demo: Colégio EDUGEST — Clique em Entrar para acessar
-            </p>
+            <h1 className="text-2xl font-bold text-gray-900">Entrar na EDUGEST</h1>
+            <p className="text-sm text-gray-500 mt-1">Gestão inteligente para uma educação melhor</p>
           </div>
-          <button
-            onClick={() => setShowLogin(false)}
-            className="w-full mt-4 text-center text-sm text-white/70 hover:text-white transition-colors"
-          >
-            ← Voltar ao site
-          </button>
-        </motion.div>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">E-mail</label>
+              <input
+                type="email"
+                defaultValue="admin@edugest.com"
+                className="w-full mt-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">Senha</label>
+              <input
+                type="password"
+                defaultValue="edugest2026"
+                className="w-full mt-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              />
+            </div>
+            <button
+              onClick={onLogin}
+              className="w-full py-2.5 gradient-primary text-white rounded-lg font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+            >
+              Entrar <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          <p className="text-center text-xs text-gray-400 mt-6">
+            Demo: Colégio EDUGEST — Clique em Entrar para acessar
+          </p>
+        </div>
+        <button
+          onClick={() => setShowLogin(false)}
+          className="w-full mt-4 text-center text-sm text-white/70 hover:text-white transition-colors"
+        >
+          ← Voltar ao site
+        </button>
       </div>
     );
   }
